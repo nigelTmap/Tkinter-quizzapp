@@ -1,6 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
 import sqlite3
+import pyttsx3
+import threading
+ 
+#initialize speak engine
+engine = pyttsx3.init()
 
 # Connect to SQLite database
 conn = sqlite3.connect('quiz.db')
@@ -22,6 +27,7 @@ questions = [
 #cursor.execute('DELETE FROM questions')
 conn.commit()
 
+
 class Quiz:
     def __init__(self):
         self.root = Tk()
@@ -39,8 +45,9 @@ class Quiz:
 
         # Start quiz
         self.root.mainloop()
+    
 
-    def display_question(self):
+    def  display_question(self):
         # Clear previous question
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -52,9 +59,11 @@ class Quiz:
         frame = LabelFrame(self.root,padx=100,pady=50,text="QUESTION "+str(self.question_number+1),font=("Arial",12))
         frame.grid(row=2,column=0,padx=20,pady=10)
 
+
         question = self.questions[self.question_number]
         Label(frame, text=question[1],font=("Arial",18),wraplength=600).grid(row=3,column=0)
-
+        
+    
         # Display options
         self.options = [
             Radiobutton(frame, text=question[2],font=("Arial",16)),
@@ -70,6 +79,12 @@ class Quiz:
 
         # Display submit button
         Button(frame, text="Submit", command=self.check_answer,font=("Arial",16),bg="#4CAF50",fg="#fff").grid(row=9,column=0,pady=20)
+    
+        def speak():
+            engine.say(question[1])
+            engine.runAndWait()
+         
+        threading.Thread(target=speak).start()       
 
     def check_answer(self):
         selected_option = self.selected_option.get()
@@ -78,7 +93,8 @@ class Quiz:
         question = self.questions[self.question_number]
         if selected_option == question[6]:
             self.score += 1
-            messagebox.showinfo("Correct!", "You answered correctly!")
+            engine.say("correct")
+            
         else:
             if(question[6]== 1):
              messagebox.showinfo("Incorrect", f"Sorry, the correct answer was {question[2]}")
@@ -103,9 +119,17 @@ class Quiz:
         # Clear previous question
         for widget in self.root.winfo_children():
             widget.destroy()
-
+        
         # Display results
-        Label(self.root, text=f"Quiz finished! Your score is {self.score}/{len(self.questions)}",font=("Arial",20)).pack(pady=80)
+        if self.score < len(self.questions)/2:
+         Label(self.root, text=f"Sorry. You failed! Your score is {self.score}/{len(self.questions)}",font=("Arial",20)).pack(pady=80)
+         Label(self.root, text=f"Percentage score: {round((self.score/len(self.questions))*100,2)}%",font=("Arial",15)).pack(pady=80)
+        elif self.score <=  len(self.questions)*(3/4) and  self.score >= len(self.questions)/2:
+         Label(self.root, text=f"Congratulations! Your score is {self.score}/{len(self.questions)}",font=("Arial",20)).pack(pady=80)
+         Label(self.root, text=f"Percentage score: {round((self.score/len(self.questions))*100,2)}%",font=("Arial",15)).pack(pady=80)
+        else:
+         Label(self.root, text=f"Excellent! Your score is {self.score}/{len(self.questions)}",font=("Arial",20)).pack(pady=80)
+         Label(self.root, text=f"Percentage score: {round((self.score/len(self.questions))*100,2)}%",font=("Arial",15)).pack(pady=80)
 
 if __name__ == "__main__":
     quiz = Quiz()

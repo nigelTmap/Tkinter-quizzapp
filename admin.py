@@ -41,7 +41,7 @@ def add_question():
     conn.commit()
     messagebox.showinfo("Success", "Question added successfully")
 
-    conn.close()
+    
 
     
     
@@ -95,7 +95,7 @@ def querry():
     records = cursor.fetchall()
 
     conn.commit()
-    conn.close()
+    
     
     print_records =''
     for record in records:
@@ -117,7 +117,6 @@ def delete():
     conn.commit()
     messagebox.showinfo("successful","Question has been deleted")
     
-    conn.close()
     manage.destroy()
 
 def edit():
@@ -134,7 +133,7 @@ def edit():
     records = cursor.fetchall()
 
     conn.commit()
-    conn.close()
+
 
 
     Label(editor, text="Update a question",font=("Arial",24,"bold")).grid(row=0,column=0,pady=20,padx=20,columnspan=2)
@@ -171,17 +170,17 @@ def edit():
     option4_entr = Entry(editor,width=30,font=("Arial",12))
     option4_entr.grid(row=8,column=1,)
 
-    answer_label = Label(editor, text="Correct Answer",font=("Arial",16,"bold"))
-    answer_label.grid(row=10,column=0,pady=10,padx=20)
+   # answer_label = Label(editor, text="Correct Answer",font=("Arial",16,"bold"))
+   # answer_label.grid(row=10,column=0,pady=10,padx=20)
     answe_var = IntVar()
-    answe_option1 = Radiobutton(editor, text="Option 1", variable=answe_var, value=1,font=(12))
-    answe_option1.grid(row=11,column=0,padx=20)
-    answe_option2 = Radiobutton(editor, text="Option 2", variable=answe_var, value=2,font=(12))
-    answe_option2.grid(row=11,column=1,padx=20)
-    answe_option3 = Radiobutton(editor, text="Option 3", variable=answe_var, value=3,font=(12))
-    answe_option3.grid(row=12,column=0,padx=20)
-    answe_option4 = Radiobutton(editor, text="Option 4", variable=answe_var, value=4,font=(12))
-    answe_option4.grid(row=12,column=1,padx=20)
+   #answe_option1 = Radiobutton(editor, text="Option 1", variable=answe_var, value=1,font=(12))
+    #answe_option1.grid(row=11,column=0,padx=20)
+    #answe_option2 = Radiobutton(editor, text="Option 2", variable=answe_var, value=2,font=(12))
+    #answe_option2.grid(row=11,column=1,padx=20)
+    #answe_option3 = Radiobutton(editor, text="Option 3", variable=answe_var, value=3,font=(12))
+    #answe_option3.grid(row=12,column=0,padx=20)
+    #answe_option4 = Radiobutton(editor, text="Option 4", variable=answe_var, value=4,font=(12))
+    #answe_option4.grid(row=12,column=1,padx=20)
 
 
     for record in records:
@@ -190,8 +189,9 @@ def edit():
         option2_entr.insert(0,record[3])
         option3_entr.insert(0,record[4])
         option4_entr.insert(0,record[5])
-        answe_var.set(record[6])
-        
+    
+    
+    
 
     edit_button = Button(editor, text="Save Changes", command=update,font=("Arial",16),bg="#4CAF50",fg="#fff")
     edit_button.grid(row=13,column=1,pady=10)
@@ -224,7 +224,7 @@ def update():
     )
 
     conn.commit()
-    conn.close()
+
 
     editor.destroy()
     
